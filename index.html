@@ -430,19 +430,19 @@
             <div class="cost-breakdown">
                 <div class="cost-item">
                     <div class="cost-value payg-cost" id="paygCost">$31,680</div>
-                    <div class="cost-label">Pay-as-you-go<br><span id="paygDetails">3.17M messages/month</span></div>
+                    <div class="cost-label">Pay-as-you-go<br><span id="paygDetails">3.17M messages/month</span><br><strong>Annual: <span id="paygAnnual">$380,160</span></strong></div>
                 </div>
                 <div class="cost-item">
                     <div class="cost-value message-pack-cost" id="messagePackCost">$25,600</div>
-                    <div class="cost-label">Message Packs<br><span id="packDetails">128 packs (3.2M capacity)</span></div>
+                    <div class="cost-label">Message Packs<br><span id="packDetails">128 packs (3.2M capacity)</span><br><strong>Annual: <span id="packAnnual">$307,200</span></strong></div>
                 </div>
                 <div class="cost-item">
                     <div class="cost-value copilot365-cost" id="copilot365Cost">$6,000</div>
-                    <div class="cost-label">Full Copilot Licenses<br><span id="licenseDetails">200 users × $30/month</span></div>
+                    <div class="cost-label">Full Copilot Licenses<br><span id="licenseDetails">200 users × $30/month</span><br><strong>Annual: <span id="licenseAnnual">$72,000</span></strong></div>
                 </div>
                 <div class="cost-item">
                     <div class="cost-value hybrid-cost" id="hybridCost">$8,742</div>
-                    <div class="cost-label">Hybrid Strategy<br><span id="hybridDetails">30% licenses, 70% PAYG</span></div>
+                    <div class="cost-label">Hybrid Strategy<br><span id="hybridDetails">30% licenses, 70% PAYG</span><br><strong>Annual: <span id="hybridAnnual">$104,904</span></strong></div>
                 </div>
             </div>
         </div>
@@ -617,17 +617,21 @@
             const hybridTotalCost = hybridLicenseCost + hybridPaygCost;
             
             // Update displays
-            document.getElementById('paygCost').textContent = `$${paygMonthlyCost.toLocaleString()}`;
+            document.getElementById('paygCost').textContent = `${paygMonthlyCost.toLocaleString()}`;
             document.getElementById('paygDetails').textContent = `${(adjustedMessages/1000000).toFixed(2)}M messages/month`;
+            document.getElementById('paygAnnual').textContent = `${(paygMonthlyCost * 12).toLocaleString()}`;
             
-            document.getElementById('messagePackCost').textContent = `$${messagePackCost.toLocaleString()}`;
+            document.getElementById('messagePackCost').textContent = `${messagePackCost.toLocaleString()}`;
             document.getElementById('packDetails').textContent = `${packsNeeded} packs (${(packsNeeded * 25000/1000000).toFixed(1)}M capacity)`;
+            document.getElementById('packAnnual').textContent = `${(messagePackCost * 12).toLocaleString()}`;
             
-            document.getElementById('copilot365Cost').textContent = `$${fullLicenseCost.toLocaleString()}`;
+            document.getElementById('copilot365Cost').textContent = `${fullLicenseCost.toLocaleString()}`;
             document.getElementById('licenseDetails').textContent = `${totalUsers} users × $30/month`;
+            document.getElementById('licenseAnnual').textContent = `${(fullLicenseCost * 12).toLocaleString()}`;
             
-            document.getElementById('hybridCost').textContent = `$${hybridTotalCost.toLocaleString()}`;
+            document.getElementById('hybridCost').textContent = `${hybridTotalCost.toLocaleString()}`;
             document.getElementById('hybridDetails').textContent = `${hybridLicenseUsers} licenses, ${hybridPaygUsers} PAYG`;
+            document.getElementById('hybridAnnual').textContent = `${(hybridTotalCost * 12).toLocaleString()}`;
             
             // Update chart
             chart.data.datasets[0].data = [paygMonthlyCost, messagePackCost, fullLicenseCost, hybridTotalCost];
