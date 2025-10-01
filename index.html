@@ -370,7 +370,7 @@
                         <div class="insight-text" id="purchasingInsight">...</div>
                     </div>
                     <div class="insight-item">
-                        <div class="insight-title">License Mix Analysis</div>
+                        <div class="insight-title">License Mix Percentage</div>
                         <div class="insight-text" id="licenseMixInsight">...</div>
                     </div>
                     <div class="insight-item">
@@ -555,42 +555,51 @@
                 myChart.update();
 
                 // --- Update Insights ---
-                updateInsights(licensedUsers, unlicensedUsers, paygCostForUnlicensed, packCostForUnlicensed, dataAccessType);
-            }
+                updateInsights(licensedUsers, unlicensedUsers, totalMonthlyCostPayg, totalMonthlyCostPacks, fullLicenseTotalCost, dataAccessType);            }
 
-            function updateInsights(licensed, unlicensed, paygCost, packCost, dataType) {
-                // Purchasing Recommendation for Unlicensed Users
-                let purchasingInsight = '';
-                if (unlicensed > 0) {
-                    if (packCost < paygCost) {
-                        purchasingInsight = `Purchasing message packs is the more cost-effective choice for your unlicensed users, saving $${Math.round(paygCost - packCost).toLocaleString()} per month.`;
-                    } else {
-                        purchasingInsight = 'The Pay-as-you-go model is currently the most economical option for your unlicensed users.';
+                function updateInsights(licensed, unlicensed, totalMonthlyCostPayg, totalMonthlyCostPacks, fullLicenseTotalCost, dataAccessType) {
+                const totalUsers = licensed + unlicensed;
+
+                // Purchasing Recommendation (now compares overall cost)
+                let purchasingInsight = 'Enter user numbers to see a recommendation.';
+                const costs = [
+                    { name: 'Hybrid with Pay-as-you-go', cost: totalMonthlyCostPayg },
+                    { name: 'Hybrid with Message Packs', cost: totalMonthlyCostPacks },
+                    { name: 'Full Licensing', cost: fullLicenseTotalCost }
+                ];
+
+                if (totalUsers > 0) {
+                    const minCost = Math.min(...costs.map(c => c.cost));
+                    const bestOption = costs.find(c => c.cost === minCost);
+                    
+                    if (bestOption) {
+                        purchasingInsight = `Based on your inputs, the <strong>${bestOption.name}</strong> model is the most cost-effective overall strategy.`;
+                        if (bestOption.name === 'Full Licensing') {
+                            purchasingInsight += ` At this usage level, licensing all users is cheaper than a hybrid model.`;
+                        }
                     }
-                } else {
-                    purchasingInsight = 'All users are licensed. No purchasing decision for unlicensed usage is needed.';
                 }
-                document.getElementById('purchasingInsight').textContent = purchasingInsight;
+                document.getElementById('purchasingInsight').innerHTML = purchasingInsight;
                 
                 // License Mix Analysis
-                const total = licensed + unlicensed;
-                const licensePercentage = total > 0 ? (licensed / total * 100) : 0;
+                const licensePercentage = totalUsers > 0 ? (licensed / totalUsers * 100) : 0;
                 let licenseMixInsight = `${licensePercentage.toFixed(0)}% of users are licensed. `;
-                if (total > 0) {
-                    if (licensePercentage === 100) licenseMixInsight += "This provides maximum cost predictability.";
-                    else if (licensePercentage >= 70) licenseMixInsight += "This mix favors cost predictability for consistent, heavy usage.";
-                    else if (licensePercentage >= 30) licenseMixInsight += "This is a balanced hybrid approach for mixed usage patterns.";
-                    else licenseMixInsight += "This mix favors flexibility for variable or infrequent usage.";
-                } else {
-                    licenseMixInsight = "Enter user numbers to begin analysis.";
-                }
+                // if (totalUsers > 0) {
+                //     if (licensePercentage === 100) licenseMixInsight += "This provides maximum cost predictability.";
+                //     else if (licensePercentage >= 70) licenseMixInsight += "This mix favors cost predictability for consistent, heavy usage.";
+                //     else if (licensePercentage >= 30) licenseMixInsight += "This is a balanced hybrid approach for mixed usage patterns.";
+                //     else licenseMixInsight += "This mix favors flexibility for variable or infrequent usage.";
+                // } else {
+                //     licenseMixInsight = "Enter user numbers to begin analysis.";
+                // }
                 document.getElementById('licenseMixInsight').textContent = licenseMixInsight;
 
                 // Break-Even Analysis for an Unlicensed User
-                const costPerUnlicensedUser = unlicensed > 0 ? paygCost / unlicensed : 0;
-                const messagesPerQuery = messageMultipliers[dataType];
+                const paygCostForUnlicensed = totalMonthlyCostPayg - (licensed * 30);
+                const costPerUnlicensedUser = unlicensed > 0 ? paygCostForUnlicensed / unlicensed : 0;
+                const messagesPerQuery = messageMultipliers[dataAccessType];
                 const breakEvenQueries = (30 / (22 * messagesPerQuery * 0.01)).toFixed(1);
-                let breakEvenInsight = `A full license becomes cheaper than PAYG for an unlicensed user if they average over ${breakEvenQueries} queries per day. `;
+                let breakEvenInsight = `A full license becomes cheaper than PAYG for an individual unlicensed user if they average over ${breakEvenQueries} queries per day. `;
                 if (unlicensed > 0) {
                      breakEvenInsight += `Currently, your average PAYG cost is $${costPerUnlicensedUser.toFixed(2)} per user.`;
                 }
