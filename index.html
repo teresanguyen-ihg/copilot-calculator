@@ -222,6 +222,7 @@
             margin-top: 12px;
         }
 
+
         .insight-item {
             padding: 12px;
             border-left: 4px solid #0078d4;
@@ -246,6 +247,30 @@
             border: 2px solid #107c10;
             box-shadow: 0 6px 16px rgba(16, 124, 16, 0.2);
         }
+        .reference-link {
+            grid-column: 1 / -1;
+            text-align: center;
+            margin-bottom: 20px;
+            padding: 15px;
+            background: linear-gradient(135deg, #f0f8ff 0%, #e6f3ff 100%);
+            border-radius: 10px;
+            border: 2px solid #c7e0f4;
+        }
+
+        .reference-link a {
+            color: #0078d4;
+            text-decoration: none;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: color 0.3s ease;
+        }
+
+        .reference-link a:hover {
+            color: #106ebe;
+            text-decoration: underline;
+        }        
 
         @media (max-width: 1024px) {
             .container { grid-template-columns: 1fr; }
@@ -260,8 +285,18 @@
 <body>
     <div class="container">
         <h1>Microsoft Copilot Studio Enterprise Cost Calculator</h1>
-        <p class="subtitle">Analyze costs based on your specific mix of licensed and unlicensed users</p>
+        <p class="subtitle">Analyze costs based on the specific mix of licensed and unlicensed users</p>
         
+        <div class="reference-link">
+            <a href="https://microsoft.github.io/copilot-studio-estimator/" target="_blank" rel="noopener noreferrer">
+                <svg style="width: 16px; height: 16px; fill: currentColor;" viewBox="0 0 16 16">
+                    <path d="M8.636 3.5a.5.5 0 0 0-.5-.5H1.5A1.5 1.5 0 0 0 0 4.5v10A1.5 1.5 0 0 0 1.5 16h10a1.5 1.5 0 0 0 1.5-1.5V7.864a.5.5 0 0 0-1 0V14.5a.5.5 0 0 1-.5.5h-10a.5.5 0 0 1-.5-.5v-10a.5.5 0 0 1 .5-.5h6.636a.5.5 0 0 0 .5-.5z"/>
+                    <path d="M16 .5a.5.5 0 0 0-.5-.5h-5a.5.5 0 0 0 0 1h3.793L6.146 9.146a.5.5 0 1 0 .708.708L15 1.707V5.5a.5.5 0 0 0 1 0v-5z"/>
+                </svg>
+                Official Microsoft Copilot Studio Estimator
+            </a>
+        </div>
+
         <div class="controls">
             <div class="user-split-container">
                 <div class="section-title">User Allocation</div>
@@ -295,6 +330,11 @@
                         <option value="mixed" selected>Mixed Organizational Data (16 msg/query)</option>
                         <option value="advanced">Advanced Graph/Database (24.4 msg/query)</option>
                     </select>
+                    <div class="help-text" style="margin-top: 8px; line-height: 1.5;">
+                         <strong>SharePoint Only:</strong> For basic questions answered by searching text within SharePoint files.<br>
+                         <strong>Mixed Data:</strong> For complex queries that relate data, like finding documents from a specific team on a project.<br>
+                         <strong>Advanced Graph:</strong> For deep analytical questions connecting info across multiple systems (databases, CRMs).
+                    </div>
                 </div>
                 <div class="input-group">
                     <label for="seasonalMultiplier">Seasonal/Peak Usage Multiplier:</label>
